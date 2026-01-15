@@ -19,7 +19,7 @@ export default function RootLayout({
         <html lang="ko">
             <body className={inter.className}>
                 {children}
-                <Script src="https://cdn.iamport.kr/v1/iamport.js" strategy="afterInteractive" />
+                <Script src="https://cdn.portone.io/v2/browser-sdk.js" strategy="afterInteractive" />
             </body>
         </html>
     );

@@ -21,9 +21,9 @@ interface OrderForm {
     address: string;
 }
 
-// --- PortOne Configuration (Modify this with your console settings) ---
-const PORTONE_IMP_ID = "imp77363403"; // Your Merchant ID (가맹점 식별코드)
-const PORTONE_PG_PROVIDER = "kakaopay.TC0ONETIME"; // Default Test PG
+// --- PortOne V2 Configuration (Modify this with your console settings) ---
+const PORTONE_STORE_ID = "iamporttest_3"; // Your Store ID (상점 ID)
+const PORTONE_CHANNEL_KEY = "channel-key-8596b44b-d1d7-4983-a34a-54910d976b60"; // Your Channel Key (채널 키)
 // -------------------------------------------------------------------
 
 export default function FigureShop() {
@@ -94,51 +94,58 @@ export default function FigureShop() {
 
     const isFormValid = form.name && form.phone && form.email && form.address;
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         if (!isFormValid) {
             alert("모든 주문 정보를 입력해주세요.");
             return;
         }
 
-        const { IMP } = window as any;
-        if (!IMP) {
-            alert("결제 통신 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+        const { PortOne } = window as any;
+        if (!PortOne) {
+            alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
             return;
         }
 
-        IMP.init(PORTONE_IMP_ID);
+        try {
+            const paymentId = `payment-${new Date().getTime()}`;
+            const response = await PortOne.requestPayment({
+                storeId: PORTONE_STORE_ID,
+                channelKey: PORTONE_CHANNEL_KEY,
+                paymentId,
+                orderName: `피규어 샵 주문: ${cart[0].name}${cart.length > 1 ? ` 외 ${cart.length - 1}건` : ""}`,
+                totalAmount: totalPrice,
+                currency: "CURRENCY_KRW",
+                payMethod: "CARD",
+                customer: {
+                    fullName: form.name,
+                    phoneNumber: form.phone,
+                    email: form.email,
+                    address: form.address,
+                    zipcode: "12345",
+                },
+            });
 
-        const data = {
-            pg: PORTONE_PG_PROVIDER,
-            pay_method: "card",
-            merchant_uid: `mid_${new Date().getTime()}`,
-            amount: totalPrice,
-            name: `피규어 샵 주문: ${cart[0].name}${cart.length > 1 ? ` 외 ${cart.length - 1}건` : ""}`,
-            buyer_name: form.name,
-            buyer_tel: form.phone,
-            buyer_email: form.email,
-            buyer_addr: form.address,
-            buyer_postcode: "12345",
-        };
-
-        IMP.request_pay(data, (rsp: any) => {
-            if (rsp.success) {
-                const orderSummary = {
-                    orderId: rsp.merchant_uid,
-                    items: cart,
-                    totalPrice,
-                    date: new Date().toISOString(),
-                    buyer: form
-                };
-                localStorage.setItem("last-order", JSON.stringify(orderSummary));
-                setOrderSuccess(orderSummary);
-                setCart([]);
-                setIsCartOpen(false);
-                setShowCheckoutForm(false);
-            } else {
-                alert(`결제 실패: ${rsp.error_msg}`);
+            if (response.code != null) {
+                // Error occurred during request
+                alert(`결제 요청 실패: ${response.message}`);
+                return;
             }
-        });
+
+            const orderSummary = {
+                orderId: paymentId,
+                items: cart,
+                totalPrice,
+                date: new Date().toISOString(),
+                buyer: form
+            };
+            localStorage.setItem("last-order", JSON.stringify(orderSummary));
+            setOrderSuccess(orderSummary);
+            setCart([]);
+            setIsCartOpen(false);
+            setShowCheckoutForm(false);
+        } catch (error: any) {
+            alert(`결제 중 오류가 발생했습니다: ${error.message}`);
+        }
     };
 
     return (
