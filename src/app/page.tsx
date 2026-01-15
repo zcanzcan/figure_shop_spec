@@ -133,6 +133,7 @@ export default function FigureShop() {
                     email: form.email,
                     address: {
                         addressLine1: form.address,
+                        addressLine2: "",
                     },
                     zipcode: "12345",
                 },
