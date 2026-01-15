@@ -123,7 +123,7 @@ export default function FigureShop() {
                     phoneNumber: form.phone,
                     email: form.email,
                     address: {
-                        oneLine: form.address,
+                        addressLine1: form.address,
                     },
                     zipcode: "12345",
                 },
