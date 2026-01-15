@@ -106,7 +106,16 @@ export default function FigureShop() {
             return;
         }
 
-        console.log("PortOne Config:", { storeId: PORTONE_STORE_ID, channelKey: PORTONE_CHANNEL_KEY });
+        if (!PORTONE_STORE_ID || !PORTONE_CHANNEL_KEY) {
+            console.error("Missing PortOne Environment Variables:", {
+                storeId: PORTONE_STORE_ID ? "Exists" : "MISSING",
+                channelKey: PORTONE_CHANNEL_KEY ? "Exists" : "MISSING"
+            });
+            alert("연동 설정(환경 변수)이 누락되었습니다. Vercel 설정을 확인하고 Redeploy 해주세요.");
+            return;
+        }
+
+        console.log("PortOne Config Final Check:", { storeId: PORTONE_STORE_ID, channelKey: PORTONE_CHANNEL_KEY });
 
         try {
             const paymentId = `payment-${new Date().getTime()}`;
