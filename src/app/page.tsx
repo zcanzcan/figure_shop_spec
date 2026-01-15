@@ -122,7 +122,9 @@ export default function FigureShop() {
                     fullName: form.name,
                     phoneNumber: form.phone,
                     email: form.email,
-                    address: form.address,
+                    address: {
+                        oneLine: form.address,
+                    },
                     zipcode: "12345",
                 },
             };
