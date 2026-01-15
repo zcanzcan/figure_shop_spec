@@ -22,7 +22,7 @@ interface OrderForm {
 }
 
 // --- PortOne V2 Configuration (Controlled via Environment Variables) ---
-const PORTONE_STORE_ID = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || ""; 
+const PORTONE_STORE_ID = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "";
 const PORTONE_CHANNEL_KEY = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 // -------------------------------------------------------------------
 
@@ -106,16 +106,18 @@ export default function FigureShop() {
             return;
         }
 
+        console.log("PortOne Config:", { storeId: PORTONE_STORE_ID, channelKey: PORTONE_CHANNEL_KEY });
+
         try {
             const paymentId = `payment-${new Date().getTime()}`;
-            const response = await PortOne.requestPayment({
+            const requestData = {
                 storeId: PORTONE_STORE_ID,
                 channelKey: PORTONE_CHANNEL_KEY,
                 paymentId,
                 orderName: `피규어 샵 주문: ${cart[0].name}${cart.length > 1 ? ` 외 ${cart.length - 1}건` : ""}`,
                 totalAmount: totalPrice,
-                currency: "CURRENCY_KRW",
-                payMethod: "CARD",
+                currency: "CURRENCY_KRW" as const,
+                payMethod: "CARD" as const,
                 customer: {
                     fullName: form.name,
                     phoneNumber: form.phone,
@@ -123,7 +125,10 @@ export default function FigureShop() {
                     address: form.address,
                     zipcode: "12345",
                 },
-            });
+            };
+            console.log("Requesting payment with:", requestData);
+
+            const response = await PortOne.requestPayment(requestData);
 
             if (response.code != null) {
                 // Error occurred during request
