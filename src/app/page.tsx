@@ -21,9 +21,9 @@ interface OrderForm {
     address: string;
 }
 
-// --- PortOne V2 Configuration (Modify this with your console settings) ---
-const PORTONE_STORE_ID = "iamporttest_3"; // Your Store ID (상점 ID)
-const PORTONE_CHANNEL_KEY = "channel-key-8596b44b-d1d7-4983-a34a-54910d976b60"; // Your Channel Key (채널 키)
+// --- PortOne V2 Configuration (Controlled via Environment Variables) ---
+const PORTONE_STORE_ID = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || ""; 
+const PORTONE_CHANNEL_KEY = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 // -------------------------------------------------------------------
 
 export default function FigureShop() {
