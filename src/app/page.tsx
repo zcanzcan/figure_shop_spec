@@ -127,6 +127,7 @@ export default function FigureShop() {
                 totalAmount: totalPrice,
                 currency: "CURRENCY_KRW" as const,
                 payMethod: "CARD" as const,
+                redirectUrl: window.location.href, // Added redirectUrl for mobile
                 customer: {
                     fullName: form.name,
                     phoneNumber: form.phone,
@@ -166,7 +167,7 @@ export default function FigureShop() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-accent-gold selection:text-black scroll-smooth">
+        <div className="min-h-screen min-h-[100dvh] bg-[#050505] text-white font-sans selection:bg-accent-gold selection:text-black scroll-smooth">
             {/* Header */}
             <nav className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
@@ -207,7 +208,7 @@ export default function FigureShop() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+            <section className="relative h-[90vh] h-[90dvh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black z-10" />
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1626272828275-3e072935ee1b?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center grayscale contrast-125 opacity-40 scale-110 animate-[pulse_10s_infinite_alternate]" />
 
